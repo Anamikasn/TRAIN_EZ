@@ -69,7 +69,11 @@ class ExerciseScreen extends StatelessWidget {
               ),
             ),
             Align(alignment: Alignment.bottomCenter,
-            child: ElevatedButton(onPressed:(){},
+            child: ElevatedButton(onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CameraPage()),
+            );
              child: Text("Open Camera",style: TextStyle(color: Colors.white),),
              style: ButtonStyle(backgroundColor:WidgetStatePropertyAll(Colors.black)),))
           ],
