@@ -41,7 +41,7 @@ class _AllScreenState extends State<AllScreen> {
         fixedColor: MyColor.orange,
         items: [ const
         BottomNavigationBarItem(icon: Icon(Icons.home_filled,),label: 'Home', ),
-        BottomNavigationBarItem(icon: Icon(Icons.fitness_center),label: 'Activities'),
+        BottomNavigationBarItem(icon: Icon(Icons.fitness_center),label: 'Exercises'),
         BottomNavigationBarItem(icon: Icon(Icons.person),label: 'Profile')
       ])
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trainez_miniproject/Screens/camerpage.dart';
 import 'package:trainez_miniproject/core/mycolors.dart';
 
 class ExerciseScreen extends StatelessWidget {
@@ -73,9 +74,9 @@ class ExerciseScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const CameraPage()),
-            );
-             child: Text("Open Camera",style: TextStyle(color: Colors.white),),
-             style: ButtonStyle(backgroundColor:WidgetStatePropertyAll(Colors.black)),))
+            );},
+             style: ButtonStyle(backgroundColor:WidgetStatePropertyAll(Colors.black)),
+             child: Text("Open Camera",style: TextStyle(color: Colors.white),)))
           ],
         ),
       ),

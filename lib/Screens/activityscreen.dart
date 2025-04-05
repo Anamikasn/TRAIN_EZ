@@ -31,7 +31,7 @@ class ActivityScreen extends StatelessWidget {
     },
     {
       "name": "Lunges",
-      "image": "assets/images/Lunges.jpg",
+      "image": "assets/images/lunges.jpg",
       "description": "Lunges improve lower body strength and balance.",
       "instruction":'''  
       1. Stand straight with your feet hip-width apart and hands on your hips or at your sides.

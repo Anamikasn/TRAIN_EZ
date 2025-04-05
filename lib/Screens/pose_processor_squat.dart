@@ -23,7 +23,11 @@ class PoseProcessorService {
     int processingDelayMs = 100,
   }) : _poseDetector = PoseDetector(options: PoseDetectorOptions()),
        _onFeedbackUpdate = onFeedbackUpdate,
-       _processingDelayMs = processingDelayMs;
+       _processingDelayMs = processingDelayMs {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onFeedbackUpdate("Ready to start? Please stand fully in the camera view");
+    });
+  }
 
   void scheduleProcessing(InputImage inputImage) {
     // Always store the latest frame, dropping intermediate ones
@@ -38,15 +42,12 @@ class PoseProcessorService {
     final delayMs = max(0, _processingDelayMs - _lastProcessingTimeMs);
 
     _processingTimer?.cancel();
-    _processingTimer = Timer(
-      Duration(milliseconds: delayMs),
-      () {
-        if (_latestPendingImage != null) {
-          processImage(_latestPendingImage!);
-          _latestPendingImage = null;
-        }
-      },
-    );
+    _processingTimer = Timer(Duration(milliseconds: delayMs), () {
+      if (_latestPendingImage != null) {
+        processImage(_latestPendingImage!);
+        _latestPendingImage = null;
+      }
+    });
   }
 
   Future<void> processImage(InputImage inputImage) async {
@@ -56,22 +57,25 @@ class PoseProcessorService {
     try {
       final poses = await _poseDetector.processImage(inputImage);
       if (poses.isNotEmpty) {
-        final feedback = _analyzePose(poses.first);
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _onFeedbackUpdate(feedback);
+          _onFeedbackUpdate("Please stand fully in the camera view");
         });
       }
+      final feedback = _analyzePose(poses.first);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onFeedbackUpdate(feedback);
+      });
     } catch (e) {
       debugPrint('❌ Processing error: $e');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _onFeedbackUpdate("System busy");
+        _onFeedbackUpdate("Please wait...");
       });
     } finally {
       stopwatch.stop();
       _lastProcessingTimeMs = stopwatch.elapsedMilliseconds;
       debugPrint('⏱️ Frame processed in $_lastProcessingTimeMs ms');
       _isProcessing = false;
-      
+
       // Schedule next processing if there's a pending frame
       if (_latestPendingImage != null) {
         scheduleProcessing(_latestPendingImage!);
@@ -193,6 +197,9 @@ class PoseProcessorService {
     _processingTimer?.cancel();
     _latestPendingImage = null;
     await _poseDetector.close();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onFeedbackUpdate("Ready to start");
+    });
     debugPrint('♻️ Processor disposed');
   }
 }

@@ -22,7 +22,7 @@ class _CameraPageState extends State<CameraPage> {
     DeviceOrientation.landscapeRight: 270,
   };
   late final PoseProcessorService _poseProcessor;
-  String _feedback = "Waiting for feedback...";
+  String _feedback = "Please wait...";
 
   @override
   void initState() {
@@ -42,8 +42,17 @@ class _CameraPageState extends State<CameraPage> {
 
   Future<void> _initializeCamera() async {
     _cameras = await availableCameras();
+
+    final frontCamera = _cameras.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+      orElse:
+          () =>
+              _cameras
+                  .first, // Fallback to first camera if no front camera found
+    );
+
     _controller = CameraController(
-      _cameras.first,
+      frontCamera,
       ResolutionPreset.max,
       enableAudio: false,
       imageFormatGroup:
@@ -216,7 +225,7 @@ class _CameraPageState extends State<CameraPage> {
                   _feedback,
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
